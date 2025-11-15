@@ -1,0 +1,56 @@
+import pygame
+import sys
+
+def test_controller():
+    # 初始化pygame
+    pygame.init()
+    # 初始化游戏控制器
+    pygame.joystick.init()
+    
+    # 检查是否有控制器连接
+    if pygame.joystick.get_count() == 0:
+        print("未检测到游戏控制器，请连接控制器后重试")
+        pygame.quit()
+        sys.exit()
+    
+    # 获取第一个控制器
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
+    print(f"已连接控制器: {joystick.get_name()}")
+    print("请按下控制器上的各个按键，程序将显示对应的编号")
+    print("按ESC键退出程序")
+    
+    # 用于记录已按下的按键，避免重复打印
+    pressed_buttons = set()
+    
+    # 主循环
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+            # 按键按下事件
+            if event.type == pygame.JOYBUTTONDOWN:
+                button_id = event.button
+                if button_id not in pressed_buttons:
+                    pressed_buttons.add(button_id)
+                    print(f"按键按下 - 编号: {button_id}")
+            
+            # 按键释放事件
+            if event.type == pygame.JOYBUTTONUP:
+                button_id = event.button
+                if button_id in pressed_buttons:
+                    pressed_buttons.remove(button_id)
+            
+            # 退出程序（按ESC键）
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+    
+    # 退出程序
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    test_controller()
